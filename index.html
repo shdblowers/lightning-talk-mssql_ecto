@@ -6,8 +6,9 @@
 </head>
 <body>
   <div class="reveal">
-    <span class="email">shdblowers.com</span>
+    <span class="website">shdblowers.com</span>
     <div class="slides">
+
       <section>
         <h2>Steven Blowers</h2>
         <h4>Software Development Engineer</h4>
@@ -19,6 +20,15 @@
 
       <section>
         <h2>Creating a Microsoft SQL Server Adaptor for Ecto 2.0</h2>
+
+        <aside class="notes">
+          <p>
+            This talk is called Creating a Microsoft SQL Server Adaptor for Ecto 2.0.
+          </p>
+          <p>
+            It will explore the technology choices made to deliver fast and the developer experience of creating an Ecto adaptor.
+          </p>
+        </aside>
       </section>
 
       <section>
@@ -27,70 +37,169 @@
           <li>Only SQL Server features we needed</li>
           <li>Compose existing technology</li>
         </ul>
+
+        <aside class="notes">
+          <p>
+            We wanted to deliver this project fast, so we made two key decisions on how the project would unfold.
+          </p>
+          <p>
+            Firstly we would only support the SQL server features we needed, not all of them.
+          </p>
+          <p>
+            Secondly, we would write as little code as possible, composing already existing tech were we could.
+          </p>
+        </aside>
       </section>
 
       <section>
         <img src="pictures/bridge/1.jpg">
+
+        <aside class="notes">
+          <p>
+            Let’s look at some of the existing tech we used to bridge the gap between Ecto and SQL server.
+          </p>
+          <p>
+            Currently Microsoft is making moves to be compatible with Linux and mac OS. One of the ways they have done this is with the creation of the Microsoft ODBC Driver for SQL Server.
+          </p>
+        </aside>
       </section>
 
       <section>
         <img src="pictures/bridge/2.jpg">
+
+        <aside class="notes">
+          <p>
+            With that in place we then looked for a pre-existing library that we can use to talk to an ODBC driver, not finding one in Elixir, we broadened our search to the full BEAM ecosystem and found Erlang ODBC.
+          </p>
+        </aside>
       </section>
 
       <section>
         <img src="pictures/bridge/3.jpg">
+
+        <aside class="notes">
+          <p>
+            With the Microsoft ODBC Driver and Erlang ODBC in place, we have gone from needing to bridge the gap between Ecto and the SQL server binary format, to a smaller gap between Ecto and an Erlang library.
+          </p>
+          <p>
+            So now begins where we actually write some code.
+          </p>
+        </aside>
       </section>
 
       <section>
         <img src="pictures/bridge/4.jpg">
+
+        <aside class="notes">
+          <p>
+            We decided to write our implementation as two separate libraries. One would be a general Elixir driver for working with SQL server, encompassing all the ODBC stuff. The other an adaptor between that and Ecto.
+          </p>
+        </aside>
       </section>
 
       <section>
         <h2>MSSQLEX</h2>
+
+        <aside class="notes">
+          <p>
+            The general Elixir driver is called MSSQLEX.
+          </p>
+        </aside>
       </section>
 
       <section data-background="pictures/blank-blue-print.png">
         <h2>DB_CONNECTION</h2>
         <q cite="https://hexdocs.pm/db_connection/DBConnection.html">A behaviour module for implementing efficient database connection client processes, pools and transactions.</q>
+
+        <aside class="notes">
+          <p>
+            After looking at similar drivers (Postgres, SQLite) we knew a library called DBConnection is where we should start. This library is a behaviour module, behaviours are quite an underused part of Elixir, but you can think of a behaviour module as similar to an Interface class in OOP.
+          </p>
+          <p>
+            DBConnection defines a set of behaviours that if implemented through callbacks provides an implementation for database connections, pools and transactions.
+          </p>
+          <p>
+            We used like a blueprint on how to build our driver in order to get the functionality that we wanted.
+          </p>
+        </aside>
       </section>
 
       <section>
         <img src="pictures/bridge/5.jpg">
+
+        <aside class="notes">
+          <p>
+            After we had implemented the callbacks we had a working Elixir driver for SQL server.
+          </p>
+        </aside>
       </section>
 
       <section>
         <h2>MSSQL_ECTO</h2>
+
+        <aside class="notes">
+          <p>OK, so now onto the Ecto adapter, called MSSQL_ECTO.</p>
+          <p>
+            I’m not going to go into any detail on this part, as it is a well documented process and pretty similar regardless of what database you are connecting to, instead I will point you to some useful resources we used for creating the adapter.
+          </p>
+        </aside>
       </section>
 
       <section>
         <h2>Creating Ecto Adapters</h2>
         <h4>by Michał Muskała</h4>
         <a href="http://michal.muskala.eu/2015/07/07/creating-ecto-adapters.html">http://michal.muskala.eu/2015/07/07/creating-ecto-adapters.html</a>
+
+        <aside class="notes">
+          <p>Firstly there is a blog post by Michal Muskala about creating Ecto adapters.</p>
+        </aside>
       </section>
 
       <section>
         <h2>Ecto Adapters Docs</h2>
         <img src="pictures/ecto-docs.png">
+
+        <aside class="notes">
+          <p>There is the Ecto documentation in the modules Ecto.Adapters.X.</p>
+        </aside>
       </section>
 
       <section>
         <h2>Ecto Integration Tests</h2>
         <img src="pictures/ecto-integration-tests.png">
+
+        <aside class="notes">
+          <p>
+            There is also the Ecto integration tests. We used the integration tests sort of like a checklist of the functionality we needed to do in order to get our adapter working properly. Once the checklist was done, or at least as much as we could as SQL server cannot do everything that Ecto asks of it, we were done.
+          </p>
+        </aside>
       </section>
 
       <section>
         <h2>The Project Today</h2>
+
+        <aside class="notes">
+          So where is the project today?
+        </aside>
       </section>
 
       <section>
         <h2>Hex Downloads</h2>
         <img src="pictures/mssqlex-dl.png">
         <img src="pictures/mssql-ecto-dl.png">
+
+        <aside class="notes">
+          <p>We currently have around 5,000 Hex downloads between both packages.</p>
+        </aside>
       </section>
 
       <section>
         <h2>Ecto Readme</h2>
         <img src="pictures/ecto-readme.png">
+
+        <aside class="notes">
+          <p>We are listed on the Ecto readme as an available Ecto adapter.</p>
+        </aside>
       </section>
 
       <section>
@@ -98,6 +207,12 @@
         <pre><code class="elixir">
 $ mix phx.new --database mssql
         </code></pre>
+
+        <aside class="notes">
+          <p>
+            As of Phoenix 1.3 you can run “mix phx.new --database mssql” to create a new Phoenix service using mssql_ecto and mssqlex.
+          </p>
+        </aside>
       </section>
 
       <section>
@@ -107,6 +222,12 @@ $ mix phx.new --database mssql
       <section>
         <h2>Erlang ODBC</h2>
         <img src="pictures/erlang-odbc.png">
+
+        <aside class="notes">
+          <p>
+            At the start I said we would only support the SQL server features we needed, next comes fully support all features of SQL server. Unfortunately, the limiting factor is not our libraries, it is instead Erlang ODBC. So we are looking at updating Erlang ODBC to be compatible with the newer features of SQL server and any help from the Elixir / Erlang community would be greatly appreciated.
+          </p>
+        </aside>
       </section>
 
       <section>
@@ -119,9 +240,17 @@ $ mix phx.new --database mssql
 
     </div>
   </div>
+  <script src="lib/js/head.min.js"></script>
   <script src="js/reveal.js"></script>
   <script>
-    Reveal.initialize();
+    Reveal.initialize({
+      history: true,
+      slideNumber: true,
+      transition: 'convex',
+      dependencies: [
+        { src: 'plugin/notes/notes.js', async: true }
+    ]
+    });
   </script>
 </body>
 </html>
