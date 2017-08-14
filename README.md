@@ -2,6 +2,14 @@
 
 ## License
 
+### Mssql Lightning Talk
+
+Available under MIT License.
+
+[More info](LICENSE)
+
+### Reveal.js
+
 This Lightning Talk was built using Reveal.js, which has the following license:
 
 Copyright (C) 2017 Hakim El Hattab, http://hakim.se, and reveal.js contributors
