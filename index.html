@@ -22,12 +22,9 @@
         <h2>Creating a Microsoft SQL Server Adaptor for Ecto 2.0</h2>
 
         <aside class="notes">
-          <p>
-            This talk is called Creating a Microsoft SQL Server Adaptor for Ecto 2.0.
-          </p>
-          <p>
-            It will explore the technology choices made to deliver fast and the developer experience of creating an Ecto adaptor.
-          </p>
+          <p>Talk is called...</p>
+          <p>Explore technology choices made to deliver fast</p>
+          <p>Developer experience of creating an Ecto adaptor</p>
         </aside>
       </section>
 
@@ -43,10 +40,10 @@
             We wanted to deliver this project fast, so we made two key decisions on how the project would unfold.
           </p>
           <p>
-            Firstly we would only support the SQL server features we needed, not all of them.
+            1. Only support SQL server features we needed
           </p>
           <p>
-            Secondly, we would write as little code as possible, composing already existing tech were we could.
+            2. Write as little code as possible, compose existing tech where we could
           </p>
         </aside>
       </section>
@@ -57,10 +54,13 @@
 
         <aside class="notes">
           <p>
-            Let’s look at some of the existing tech we used to bridge the gap between Ecto and SQL server.
+            Let's look at some of the exisitng tech used to bridge the gap between Ecto and SQL server
           </p>
           <p>
-            Currently Microsoft is making moves to be compatible with Linux and mac OS. One of the ways they have done this is with the creation of the Microsoft ODBC Driver for SQL Server.
+            Currently Microsoft is making moves for their software to be compatible with Linux and mac OS.
+          </p>
+          <p>
+            One of the ways they have done this is with the creation of the Microsoft ODBC Driver for SQL Server.
           </p>
         </aside>
       </section>
@@ -71,7 +71,7 @@
 
         <aside class="notes">
           <p>
-            With that in place we then looked for a pre-existing library that we can use to talk to an ODBC driver, not finding one in Elixir, we broadened our search to the full BEAM ecosystem and found Erlang ODBC.
+            With that in place we then looked for a pre-existing library that we can use to talk to an ODBC driver, and came up with Erlang ODBC which is part of Open Telecom Platform.
           </p>
         </aside>
       </section>
@@ -82,10 +82,10 @@
 
         <aside class="notes">
           <p>
-            With the Microsoft ODBC Driver and Erlang ODBC in place, we have gone from needing to bridge the gap between Ecto and the SQL server binary format, to a smaller gap between Ecto and an Erlang library.
+            With the Microsoft ODBC Driver and Erlang ODBC in place, we have gone from needing to bridge the gap between Ecto and the SQL server binary format, to a smaller gap between Ecto and the Open Telecom Platform.
           </p>
           <p>
-            So now begins where we actually write some code.
+            Now begins where we actually write some code.
           </p>
         </aside>
       </section>
@@ -96,7 +96,13 @@
 
         <aside class="notes">
           <p>
-            We decided to write our implementation as two separate libraries. One would be a general Elixir driver for working with SQL server, encompassing all the ODBC stuff. The other an adaptor between that and Ecto.
+            We decided to write our implementation as two separate libraries.
+          </p>
+          <p>
+            One would be a general Elixir driver for working with SQL server, encompassing all the ODBC stuff.
+          </p>
+          <p>
+            The other an adaptor between that and Ecto.
           </p>
         </aside>
       </section>
@@ -117,7 +123,7 @@
 
         <aside class="notes">
           <p>
-            After looking at similar drivers (Postgres, SQLite) we knew a library called DBConnection is where we should start. This library is a behaviour module, behaviours are quite an underused part of Elixir, but you can think of a behaviour module as similar to an Interface class in OOP.
+            After looking at similar drivers (Postgres, SQLite) we knew a library called DBConnection is where we should start. This library is a behaviour module, you can think of a behaviour module as similar to an Interface class in Object Oriented Programming.
           </p>
           <p>
             DBConnection defines a set of behaviours that if implemented through callbacks provides an implementation for database connections, pools and transactions.
@@ -134,7 +140,7 @@
 
         <aside class="notes">
           <p>
-            After we had implemented the callbacks we had a working Elixir driver for SQL server.
+            For the most part, after we had implemented the callbacks we had a working Elixir driver for SQL server.
           </p>
         </aside>
       </section>
@@ -143,7 +149,7 @@
         <h2>MSSQL_ECTO</h2>
 
         <aside class="notes">
-          <p>OK, so now onto the Ecto adapter, called MSSQL_ECTO.</p>
+          <p>Next the Ecto adapter called MSSQL_ECTO.</p>
           <p>
             I’m not going to go into any detail on this part, as it is a well documented process and pretty similar regardless of what database you are connecting to, instead I will point you to some useful resources we used for creating the adapter.
           </p>
@@ -165,7 +171,7 @@
         <img src="pictures/ecto-docs.png">
 
         <aside class="notes">
-          <p>There is the Ecto documentation in the modules Ecto.Adapters.X.</p>
+          <p>There is the Ecto documentation found in the modules starting Ecto.Adapters</p>
         </aside>
       </section>
 
@@ -174,15 +180,18 @@
         <img src="pictures/ecto-integration-tests.png">
 
         <aside class="notes">
-          <p>
-            There is also the Ecto integration tests. We used the integration tests sort of like a checklist of the functionality we needed to do in order to get our adapter working properly. Once the checklist was done, or at least as much as we could as SQL server cannot do everything that Ecto asks of it, we were done.
-          </p>
+          <p>There is also the Ecto integration tests.</p>
+          <p>This was great because from the get go we had a full suite of tests to help us understand what to do, how to do and if we'd done it correctly.</p>
         </aside>
       </section>
 
       <section>
         <h3>Hooray! 🎉</h3>
         <img src="pictures/bridge/6.jpg">
+
+        <aside class="notes">
+          <p>With the MSSQL_ECTO finished we were able to communicate to our database with Ecto and the project was a success.</p>
+        </aside>
       </section>
 
       <section>
@@ -234,9 +243,11 @@ $ mix phx.new --database mssql
         <img src="pictures/erlang-odbc.png">
 
         <aside class="notes">
-          <p>
-            At the start I said we would only support the SQL server features we needed, next comes fully support all features of SQL server. Unfortunately, the limiting factor is not our libraries, it is instead Erlang ODBC. So we are looking at updating Erlang ODBC to be compatible with the newer features of SQL server and any help from the Elixir / Erlang community would be greatly appreciated.
-          </p>
+          <p>At the beginning I said the aim of the project was to only support the features we needed.</p>
+          <p>Next comes full support of SQL server.</p>
+          <p>Unfortunately, the limiting factor is not our libraries, it is Erlang ODBC</p>
+          <p>We'll be working on that</p>
+          <p>Help appreciated</p>
         </aside>
       </section>
 
